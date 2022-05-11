@@ -3,7 +3,7 @@ from unidecode import unidecode
 from dicionario import dicionario
 
 NUM_TENTATIVAS = 7
-PALAVRAS = ["exemplo", "teste", "funciona"]
+PALAVRAS = ["exemplo", "teste", "idoso"]
 
 def para_string (lista):
     s = " "
@@ -29,9 +29,17 @@ def printa_certas (letras, listaCertas, contaTentativas):
                 
     return palavra
 
-def lê_tentativa():
+def lê_tentativa(palavra):
+    def lê():
+        return (unidecode(input("Palavra de " + str(tam) + " letras: (? para dica) "))).lower()
     while True:
-        tentativa = (unidecode(input("Palavra de " + str(tam) + " letras: "))).lower()
+        tentativa = lê()
+        conta_dica = 0
+        while '?' in tentativa:
+           dica(palavra, conta_dica)
+           tentativa = lê()
+           conta_dica += 1
+            
         if len(tentativa) != tam:
             print ("Chute uma palavra com o número de letras correto!!!")
             continue
@@ -40,6 +48,14 @@ def lê_tentativa():
             continue
         else:
             return tentativa
+
+def dica(palavra, conta_dica):
+    if conta_dica >= len(palavra):
+        print("Você já sabe todas as letras!!!")
+    else:
+        print ("A " + str(conta_dica + 1) + "ª letra é " + palavra[conta_dica])
+    
+
 
 conta = 0
 letrasErradas = []
@@ -52,7 +68,8 @@ for palavra in PALAVRAS:
     letrasPosCerta = list(palavra)
     flagsPosCerta = np.full((NUM_TENTATIVAS, tam), False)
     contaTentativas = 0
-    tentativa = lê_tentativa()
+    
+    tentativa = lê_tentativa(palavra)
 
     while (tentativa != palavra):
         palavraLista = list(palavra)
@@ -87,7 +104,7 @@ for palavra in PALAVRAS:
             print("Perdeu pleyba HAHAHAH")
             quit()
         
-        tentativa = lê_tentativa()      
+        tentativa = lê_tentativa(palavra)      
         
     print("Parabéns, acertou a " + str((conta + 1)) + "ª palavra!!")
     
